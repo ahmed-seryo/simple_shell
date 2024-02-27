@@ -10,23 +10,23 @@
  */
 int exit_cmd(char **array, char *av[], char *line, int cont, int ret_status)
 {
-	int i = 0, exit_stat, numb;
+	int x = 0, exit_stat, numb;
 
-	while (array[i] != NULL)
+	while (array[x] != NULL)
 	{
-		i++;
+		x++;
 	}
-	if (i == 1)
+	if (x == 1)
 	{
 		free(array);
 		free(line);
 		exit(ret_status);
 	}
-	if (i >= 2)
+	if (x >= 2)
 	{
-		for (i = 0; array[1][i] != '\0'; i++)
+		for (x = 0; array[1][x] != '\0'; x++)
 		{
-			numb = _isdigit(array[1][i]);
+			numb = _isdigit(array[1][x]);
 			if (numb == 0)
 			{
 				print_errors(array, av, cont, 2);
