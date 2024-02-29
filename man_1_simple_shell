@@ -1,101 +1,56 @@
-.TH SIMPLE_SHELL 1 "28 March 2018" "1.0" "custom man page"
+.TH man 1 "16 April 2020" "version 1.0" "simple_shell man page"
 .SH NAME
-.B Simple Shell
-- command language interpreter
+.B simple_shell
+- UNIX command interpreter
 .SH SYNOPSIS
-.B Simple Shell
+[command [flags] [files]]
 .SH DESCRIPTION
-Simple shell is one version of a command language interpreter that executes commands read from the standard input. It's functionality is limited to certain shell builtin functions found in the environmental variable
-.I PATH.
-It does not yet handle piping, redirection, pattern matching, variable expansions, and more extra functions.
-.SS Invocation
-An
-.I interactive
-simple shell can be invoked by typing ./simple_shell. Meanwhile, a
-.I non-interactive
-simple shell can also be invoked via a pipe (e.g. echo "/bin/ls" | ./simple_shell).
-.SS Command Execution
-After a command has been split into words, if it results in a simple command and an optional list of arguments, the following actions are taken.
-.sp
-If the command name contains no slashes, the shell attempts to locate it. If there exists a shell function by that name that function is invoked. If the name does not match a function, the shell searches for it in the list of shell builtins. If a match is found, that builtin is invoked.
-.sp
-If the name is neither a shell function nor a builtin, and contains no slashes, the simple shell searches each element of the environmental variable PATH for a directory containing an executable file by that name. If the search is unsuccessful, the simple shell prints an error message "Error: File or description not found."
-.SS Sample Functions
-.sp
-echo
-.I [arguments]
-      prints to standard output the argument(s) given and prints a newline
-.sp
-ls
-.I [[flags]...[arguments]]
-      lists files in the current directory according to the flags given by user
-.sp
-pwd
-      prints working directories
-.sp
-whereis
-.I [command]
-      prints to standard output which directory the function or shell builtin can be found
-.SS Shell Builtin Commands
-.sp
-cd
-      changes directory and updates environmental variables OLDPWD and PWD
-.sp
+The command interpreter simple_shell is a shell based on the sh or bash shells. It works in an interactive mode or non interactive mode,
+an interactive mode means read commands from user on a terminal and A non-interactive shell is a shell that can not interact with the user.
+Its most often run from a script or similar. In general starts by checking if a file descriptor refers to a terminal, then simple_shell waits
+to read the line, interprets the command, if the command is valid it will be excuted, otherwise it prints and descriptive error.
+Most of the commands used are located in the environment variable called PATH
+.SH INITIALIZING
+.PP
+First of all, compile all the ".c",  files with gcc -Wextra -werror -Wall -pedantic *.c -o hsh
+then you executes the hsh file, and you have your simple_shell working.
+
+.Lp
+.LP
+Then it is evaluated if it is interactive or non-interactive, after this a child process is created with the fork function to execute the input command 
+.Lp
+Use waitpid function to wait for state changes in the child of the calling process and obtein information about of child.
+.SS Built-in commands
+.TP
+exit [status]
+Command to finished the shell program, if you specified the status it will be the last status of the program. If you do not specified it, the last
+status will be the status of the last process before exit.
+.TP
 env
-      prints environmental variables
-.sp
-exit
-      exits out of simple shell and returns to user's original shell
-.sp
-setenv
-      creates non-existing or modifies existing environmental variable within shell session
-.sp
-unsetenv
-      removes existing environmental variable within shell session
-.SH EXAMPLE
-To
-.I invoke
-simple shell:
-.sp
-.RS
-(your_terminal)$ ./simple_shell
-.RE
-.RS
-.I $
-.RE
-.sp
-Sample Usage:
-.sp
-.RS
-.I $
-echo "This is pretty cool!"
-.RE
-.RS
-.I This is pretty cool!
-.RE
-.RS
-.I $
-ls -l /tmp
-.RE
-.RS
-.I total 4
-.RE
-.RS
-.I drwx------ 2 vagrant vagrant 4096 Mar 19 20:22 ssh-xTKqci
-.RE
-.sp
-To leave simple shell and return to your terminal:
-.sp
-.RS
-.I $
-exit
-.RE
-.RS
-(your_terminal)$
-.RE
+Prints the current environment.
+.SH EXAMPLES INTERACTIVE MODE
+.TP
+Show the content of a file text.txt
+.B $ /bin/cat text.txt
+.TP
+Show the content of the current directory
+.B $ /bin/ls
+.TP
+Usign flags with ls command, -l shows long files and riectories in long format, -a all the directories that start with .
+.B $ /bin/ls -l -a
+.SH EXAMPLES NON-INTERACTIVE MODE
+.TP
+Show the content of the current directory
+.B $ echo "/bin/ls" | ./hsh
+.TP
+An error example is when you type ls command with a file that does not exist, In the following the error printed is ./hsh: 1: qwerty: not found
+.B $ echo "qwerty" | ./hsh
+.LP
+.SH EXIT STATUS
+Errors that are detected by the shell, such as a syntax error, will cause the shell to exit with a non-zero exit status.
 .SH BUGS
-Bugs...
+sometimes the exit command should be executed twice to works fine, or type CTRL + D more than 2 times to exit.
 .SH SEE ALSO
-.I bash(1), sh(1), ksh(1), csh(1)
-.SH AUTHORS
-Kevin Yook and Melissa Ng
+.I sh, fork, execve, exit, fflush, free, getline, isatty, stat, strtok, wait, waitpid
+.SH AUTHOR
+Diego Gomez (dagomez2530@gmail.com), Ricardo Barreto (richardbarrodriguez@hotmail.com)
